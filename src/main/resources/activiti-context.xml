@@ -46,8 +46,4 @@
     <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
     <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
 
-    <!--配置单元测试需要用到的ActivitiRule-->
-    <bean class="org.activiti.engine.test.ActivitiRule">
-        <property name="processEngine" ref="processEngine"/>
-    </bean>
 </beans>
