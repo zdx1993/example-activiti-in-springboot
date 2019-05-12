@@ -29,7 +29,10 @@
 
 ## 在不使用activiti启动器的情况下,在springboot的项目中使用activiti
 
+1. 通过xml的方式
+2. 通过springConfig的方式
 
+其实归根结底都是方式2。
 
 ## 集成可能会出现的问题
 
