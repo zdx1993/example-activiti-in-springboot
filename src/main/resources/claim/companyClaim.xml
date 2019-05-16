@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="dxClaim" name="测试评价系统企业认领功能" isExecutable="true">
+    <documentation>(本流程需要在用户登录时进进行判断,用户是否已经认领成功,如果没有认领成功,需要判断用户是否在认领中(通过businessKey来完成),只有在用户未认领成功,并且)前面括弧内的思路作废。应该在用户点击认领按钮的时候,再开启这个流程。</documentation>
+    <startEvent id="startevent1" name="Start" activiti:initiator="companyUser"></startEvent>
+    <userTask id="companyClaim" name="企业认领" activiti:assignee="${companyUser}">
+      <documentation>点击认领按钮是,该用户任务完成,流程向下推进</documentation>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="companyClaim"></sequenceFlow>
+    <userTask id="attaAssessor" name="资料审核员审核">
+      <extensionElements>
+        <activiti:taskListener event="create" class="dx.demo.enter.javaconfig.activiti.TaskListenerTest" ></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="companyClaim" targetRef="attaAssessor"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="是否通过资料审核"></exclusiveGateway>
+    <sequenceFlow id="flow3" sourceRef="attaAssessor" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow4" name="审核不通过" sourceRef="exclusivegateway1" targetRef="companyClaim">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isPass == 0}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow5" name="审核通过" sourceRef="exclusivegateway1" targetRef="endevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isPass == 1}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+    <bpmndi:BPMNPlane bpmnElement="dxClaim" id="BPMNPlane_myProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="290.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="companyClaim" id="BPMNShape_companyClaim">
+        <omgdc:Bounds height="55.0" width="105.0" x="370.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="attaAssessor" id="BPMNShape_attaAssessor">
+        <omgdc:Bounds height="55.0" width="105.0" x="560.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="750.0" y="167.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="938.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="325.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="475.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="665.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="750.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="770.0" y="207.0"></omgdi:waypoint>
+        <omgdi:waypoint x="769.0" y="359.0"></omgdi:waypoint>
+        <omgdi:waypoint x="605.0" y="359.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="359.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="215.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="541.0" y="359.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="790.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="938.0" y="187.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="839.0" y="170.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
